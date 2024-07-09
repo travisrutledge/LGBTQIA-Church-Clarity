@@ -1,0 +1,1 @@
+# LGBTQIA-Church-Clarity
