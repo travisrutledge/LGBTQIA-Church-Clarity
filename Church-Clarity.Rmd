@@ -1,0 +1,25 @@
+---
+title: "LGBTQIA+ Church Clarity"
+purpose: "To determine which churches in Australia are actually affirming of queer people or not"
+author: "Travis Rutledge"
+date: "2024-07-09"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = TRUE,
+  eval = TRUE,
+  message = TRUE,  # Change this to FALSE before you submit your exam
+  warning = TRUE,  # Change this to FALSE before you submit your exam
+  error = TRUE,    # Change this to FALSE before you submit your exam
+  out.width = "70%",
+  fig.width = 8, 
+  fig.height = 6,
+  fig.retina = 3)
+```
+
+```{r libraries}
+
+```
+
