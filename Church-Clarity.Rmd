@@ -20,6 +20,73 @@ knitr::opts_chunk$set(
 ```
 
 ```{r libraries}
+library(rvest)
+library(tidyverse)
+library(dplyr)
+library(tm)
+library(caret)
+```
+
+
+```{r basic_web_scrape}
+#web scraping code
+url <- "https://www.c3powerhouse.com/"
+webpage <- read_html(url)
+text <- webpage %>% html_nodes("p") %>% html_text()
+```
+
+```{r advanced_web_scrape}
+# Function to get all internal links from a webpage. This function takes the base URL and the main webpage content, extracts all the links (<a> tags), filters them to keep only internal links, and converts relative URLs to absolute URLs.
+get_internal_links <- function(base_url, webpage) {
+  # Get all links
+  links <- webpage %>% html_nodes("a") %>% html_attr("href")
+  
+  # Filter for internal links
+  internal_links <- links %>% 
+    na.omit() %>% 
+    unique() %>% 
+    # Ensure the links are internal
+    keep(~ grepl("^/", .) | grepl(base_url, .)) %>% 
+    # Convert relative URLs to absolute
+    map_chr(~ ifelse(grepl("^/", .), paste0(base_url, .), .))
+  
+  return(internal_links)
+}
+
+# Base URL of the church website
+base_url <- "https://www.c3powerhouse.com"
+
+# Read the main webpage
+main_page <- read_html(base_url)
+
+# Get all internal links
+internal_links <- get_internal_links(base_url, main_page)
+
+# Function to scrape text from a webpage. This function takes a URL, reads the page content, and extracts text from <p> tags.
+scrape_page_text <- function(url) {
+  page <- read_html(url)
+  text <- page %>% html_nodes("p") %>% html_text()
+  return(text)
+}
+
+# Scrape text from all internal links. The main part of the script extracts all internal links from the base URL, then scrapes the text content from each of these links.
+all_texts <- internal_links %>%
+  map(scrape_page_text)
+
+# Combine all scraped texts into a single data frame or list
+combined_text <- unlist(all_texts)
+
+# Check the index of the "what-we-believe" page
+index <- which(internal_links == "https://www.c3powerhouse.com/what-we-believe/")
+
+# Scrape and print text specifically from the "what-we-believe" page
+what_we_believe_text <- scrape_page_text(internal_links[index])
+cat(paste(what_we_believe_text, collapse = "\n"))
+
+# View the combined text
+options(max.print = 10000)
+print(combined_text)
+
 
 ```
 
